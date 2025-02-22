@@ -38,6 +38,11 @@ class Create {
     }
     return this;
   }
+  ///child add
+  child(children) {
+  children.forEach(child => this.el.appendChild(child.el));
+  return this;
+}
   
   style(styles) {
     if (styles && typeof styles === 'object') {

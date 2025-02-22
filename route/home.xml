@@ -1,39 +1,185 @@
 <root>
-  <style>
-    .container {
-      background-color: lightblue;
-      padding: 20px;
-    }
+ 
+  <use com="/js/base/widgets.js"/>
+
+  <appBar>
+  <appBarBody>
+    <appBarBodyLeft>p</appBarBodyLeft>
+    <appBarBodyCenter>Ghd</appBarBodyCenter>
+    <appBarBodyRight>h</appBarBodyRight>
+  </appBarBody>
+  </appBar>
+  
+ <card>
+   This is card
+ </card>
+
+ <list>
+   <listItem>
+     <listItemLeft><i>home</i></listItemLeft>
+     <listItemCenter>
+       <listItemTitle>Go Home</listItemTitle>
+       <listItemSubTitle>Go to home now</listItemSubTitle>
+     </listItemCenter>
+     <listItemRight><i>download</i></listItemRight>
+   </listItem>
+   <hr/>
+      <listItem>
+     <listItemLeft><i>home</i></listItemLeft>
+     <listItemCenter>
+       <listItemTitle>Go Home</listItemTitle>
+       <listItemSubTitle>Go to home now</listItemSubTitle>
+     </listItemCenter>
+     <listItemRight><i>download</i></listItemRight>
+   </listItem>
+   
+ </list>
+ 
+
+
+
+
+<menu>
+  <menuTitle>Country</menuTitle>
+  <menuBody>
+    <menuItem>BD</menuItem>
+    <menuItem>USA</menuItem>
+  </menuBody>
+</menu>
+
+
+<button data-ui="#show">Click to popup</button>
+
+<popup id="show">
+  Thi is popup
+</popup>
+
+<steppers>
+  <steppersItem>
+    <steppersItemEnable>settings</steppersItemEnable>
+  </steppersItem>
+  <steppersSpace/>
+  <steppersItem>
+  <steppersItemEnable>code</steppersItemEnable>
+</steppersItem>
+<steppersSpace/>
+<steppersItem>
+  <steppersItemEnable>person</steppersItemEnable>
+</steppersItem>
+</steppers>
+
+<positionBoxLarge>
+ 
+ <positionBoxTopLeft>Position Lesft</positionBoxTopLeft>
+ <positionBoxTopRight>
+   Position Right
+ </positionBoxTopRight>
+ 
+ <positionBoxMiddleCenter>
+   Top Center
+ </positionBoxMiddleCenter>
+ </positionBoxLarge>
+  
+  
+  
+  <alignLeft>Algn Left</alignLeft>
+  <alignRight>Align Right</alignRight>
+  <alignCenter>Align Center</alignCenter>
+  
+  
+  <outlinedButton>Hi</outlinedButton>
+  
+  
+  <fabButton class="round">
+    <fabButtonIcon>Home</fabButtonIcon>
+    <fabButtonText>Go Home</fabButtonText>
+  </fabButton>
+  
+  <buttonCircleTransparent>
+    <icon>home</icon>
+  </buttonCircleTransparent>
+  
+  
+  <checkbox>
+    <checkboxBody></checkboxBody>
+    <checkboxText>
+      Yes
+    </checkboxText>
+  </checkbox>
+  
+  <chip>
+    <i>home</i>
+    <chipText>Hi</chipText>
+  </chip>
+  
+  
+  <details>
+    <detailsTitle>Show Me More</detailsTitle>
+    <detailsText>
+      Hello This is details Text.You See More about it.
+    </detailsText>
+  </details>
+  
+  
+  
+  <verticalLayout>
+    <button>Hi</button>
+    <button>Hi</button>
+    <horizontalLayout>
+      <button>Hi</button>
+    <button>Hi</button>
+    <button>Hi</button>
+  
     
-    .button {
-      background-color: orange;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      cursor: pointer;
-    }
+    </horizontalLayout>
     
-    .menu {
-      background-color: #f4f4f4;
-      border: 1px solid #ccc;
-      width: 200px;
-    }
+    <button>Hi</button>
     
-    .menu-item:hover {
-      background-color: #ddd;
-    }
-  </style>
-  <div class="container">
-    <!-- Text Component -->
-    <use com="/js/base/base.js" />
-    <text text="Hello, World!" class="text-style" style="font-size: 24px; color: green;" />
+  </verticalLayout>
+  
+  <horizontalScroll>
+    <button>Hi</button>
+    <button>Hi</button>
+    <button>Hi</button>
+    <button>Hi</button>
     
-    <!-- Button Component -->
-    <button text="Click Me" class="button" onClick="alert('Button clicked!')" />
-    
-    <!-- Menu Component -->
-   <script>
-     alert("hi")
-   </script>
-  </div>
+  </horizontalScroll>
+  
+<inputBox class="prefix,border">
+  <icon>email</icon>
+  <input type="text"/>
+ 
+  <inputBoxLabel>Name</inputBoxLabel>
+  <inputBoxSubLabelError>Sorry</inputBoxSubLabelError>
+</inputBox>
+
+<progress></progress>
+<button>
+  <loading class="small"></loading>
+  Loading
+</button>
+
+
+<selectBox class="suffix,small">
+  <select>
+    <option>BD</option>
+    <option>ISA</option>
+  </select>
+  
+  <label>Country</label>
+  
+  <i>home</i>
+  <helper>select your counter</helper>
+</selectBox>
+
+<seekbar/>
+<switchBox class="icon">
+<switch>
+</switch>
+<span>
+  <i>wifi</i>
+</span>
+</switchBox>
+  
+  
 </root>

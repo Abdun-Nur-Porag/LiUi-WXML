@@ -1,0 +1,1 @@
+const card=()=>create("article")

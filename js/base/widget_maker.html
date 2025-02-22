@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Component Structure Generator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    textarea, input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    button {
+      padding: 8px 12px;
+      margin-right: 5px;
+      margin-bottom: 10px;
+    }
+    .saved-item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .saved-code {
+      flex: 1;
+      margin-right: 10px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <h2>Advanced Component Structure Generator</h2>
+  <p>
+    Enter your component code, specify the component name, and provide default classes, inline CSS, and attributes.
+    The generator will extract the tag from your code—either from a create("tag") call or from a raw HTML tag (e.g. <div>)—and output the converted structure.
+  </p>
+
+  <label for="componentName">Component Name:</label>
+  <input type="text" id="componentName" placeholder="e.g., card">
+
+  <label for="htmlCode">Component Code:</label>
+  <textarea id="htmlCode" rows="3" placeholder='e.g., const card=()=>create("article") or <article></article>'></textarea>
+  
+  <label for="classInput">Default Classes (comma-separated):</label>
+  <input type="text" id="classInput" placeholder="e.g., left-align, top-align, extra-class">
+  
+  <label for="cssInput">Inline CSS (comma-separated key:value pairs):</label>
+  <input type="text" id="cssInput" placeholder="e.g., color:red, font-size:14px">
+  
+  <label for="attrsInput">Attributes (comma-separated key:value pairs):</label>
+  <input type="text" id="attrsInput" placeholder="e.g., id:myId, data-type:example">
+
+  <button id="generateBtn">Generate Structure</button>
+  <button id="saveBtn">Save</button>
+  <button id="showAllBtn">Show All Saved</button>
+
+  <h3>Generated Output</h3>
+  <pre id="output"></pre>
+
+  <h3>Saved Components</h3>
+  <div id="savedComponents"></div>
+  <textarea id="allSaved" rows="5" placeholder="All saved codes will appear here..." readonly></textarea>
+
+  <script>
+    // Global array to store saved component codes.
+    let savedComponents = [];
+
+    // Extract the HTML tag from the input code.
+    // It supports two formats:
+    // 1. create("tag") call (e.g., const card=()=>create("article"))
+    // 2. Raw HTML code (e.g., <article></article>)
+    function extractTag(code) {
+      code = code.trim();
+      let tag = null;
+      // Check for create("tag") call
+      let createRegex = /create\(["']([\w-]+)["']\)/;
+      let match = code.match(createRegex);
+      if (match) {
+        tag = match[1];
+      } else if (code.startsWith("<")) {
+        // Extract tag from raw HTML using regex, e.g., <article>
+        let htmlRegex = /^<\s*([\w-]+)/;
+        let htmlMatch = code.match(htmlRegex);
+        if (htmlMatch) {
+          tag = htmlMatch[1];
+        }
+      }
+      return tag;
+    }
+    
+    // Process comma-separated class input and return an object string.
+    function generateClassObject(classInput) {
+      if (!classInput) return "{}";
+      const classes = classInput.split(",").map(c => c.trim()).filter(c => c !== "");
+      let classObjEntries = classes.map((cls, index) => `    class${index+1}: '${cls}'`);
+      return `{\n${classObjEntries.join(",\n")}\n  }`;
+    }
+    
+    // Process inline CSS input (comma-separated key:value) into an object string.
+    function generateCSSObject(cssInput) {
+      if (!cssInput) return "{}";
+      const cssEntries = cssInput.split(",").map(entry => entry.trim()).filter(entry => entry !== "");
+      let cssObjEntries = cssEntries.map(entry => {
+        let [key, value] = entry.split(":").map(s => s.trim());
+        return `    ${key}: '${value}'`;
+      });
+      return `{\n${cssObjEntries.join(",\n")}\n  }`;
+    }
+    
+    // Process attributes input (comma-separated key:value) into an object string.
+    function generateAttrsObject(attrsInput) {
+      if (!attrsInput) return "{}";
+      const attrsEntries = attrsInput.split(",").map(entry => entry.trim()).filter(entry => entry !== "");
+      let attrsObjEntries = attrsEntries.map(entry => {
+        let [key, value] = entry.split(":").map(s => s.trim());
+        return `    ${key}: '${value}'`;
+      });
+      return `{\n${attrsObjEntries.join(",\n")}\n  }`;
+    }
+    
+    // Generate the converted component structure.
+    function generateComponent() {
+      const componentName = document.getElementById("componentName").value.trim();
+      const code = document.getElementById("htmlCode").value.trim();
+      const classInput = document.getElementById("classInput").value.trim();
+      const cssInput = document.getElementById("cssInput").value.trim();
+      const attrsInput = document.getElementById("attrsInput").value.trim();
+      
+      if (!componentName || !code) {
+        alert("Please enter both a component name and component code.");
+        return;
+      }
+      
+      // Extract the tag from the code.
+      const tag = extractTag(code);
+      if (!tag) {
+        alert("Could not extract an HTML tag from the code. Ensure it contains create('tag') or a valid HTML tag like <tag>.");
+        return;
+      }
+      
+      // Create the default objects.
+      const classObject = generateClassObject(classInput);
+      const cssObject = generateCSSObject(cssInput);
+      const attrsObject = generateAttrsObject(attrsInput);
+      
+      // Build the output code.
+      // Inline CSS is applied via .css() and attributes via .attrs()
+      const outputCode = 
+`userComponents['${componentName}'] = (props) => {
+  return new Create('${tag}')
+    .class(${classObject})
+    //.css(${cssObject})
+    //.attrs(${attrsObject});
+};`;
+      
+      document.getElementById("output").textContent = outputCode;
+      return outputCode;
+    }
+    
+    // Save generated component code.
+    function saveComponent() {
+      const generated = generateComponent();
+      if (!generated) return;
+      
+      // Save into our array.
+      savedComponents.push(generated);
+      updateSavedDisplay();
+    }
+    
+    // Update the saved components list display.
+    function updateSavedDisplay() {
+      const savedContainer = document.getElementById("savedComponents");
+      savedContainer.innerHTML = "";
+      
+      savedComponents.forEach((code, index) => {
+        const div = document.createElement("div");
+        div.className = "saved-item";
+        
+        const codePre = document.createElement("pre");
+        codePre.className = "saved-code";
+        codePre.textContent = code;
+        
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.onclick = () => {
+          savedComponents.splice(index, 1);
+          updateSavedDisplay();
+        };
+        
+        div.appendChild(codePre);
+        div.appendChild(deleteBtn);
+        savedContainer.appendChild(div);
+      });
+      
+      // Also update the textarea showing all saved codes in one row.
+      document.getElementById("allSaved").value = savedComponents.join("\n\n");
+    }
+    
+    document.getElementById("generateBtn").addEventListener("click", generateComponent);
+    document.getElementById("saveBtn").addEventListener("click", saveComponent);
+    document.getElementById("showAllBtn").addEventListener("click", updateSavedDisplay);
+  </script>
+</body>
+</html>
