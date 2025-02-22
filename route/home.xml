@@ -4,9 +4,9 @@
 
   <appBar>
   <appBarBody>
-    <appBarBodyLeft>p</appBarBodyLeft>
-    <appBarBodyCenter>Ghd</appBarBodyCenter>
-    <appBarBodyRight>h</appBarBodyRight>
+    <appBarBodyLeft>Left</appBarBodyLeft>
+    <appBarBodyCenter>Center</appBarBodyCenter>
+    <appBarBodyRight>Right</appBarBodyRight>
   </appBarBody>
   </appBar>
   

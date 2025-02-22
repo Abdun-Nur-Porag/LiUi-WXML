@@ -52,7 +52,7 @@ const routing = async () => {
     const name = params.get("route")?.toLowerCase() || "home";
 
     const routes = {
-      "home": { xml: "/route/home.xml", title: "Home" },
+      "home": { xml: "/route/home.xml", title: "LIUIML DOCUMENTION" },
       "app": { xml: "/route/app.xml", title: "App" },
       "about": { xml: "about.xml", title: "About Us" },
       "contact": { xml: "contact.xml", title: "Contact Us" }
