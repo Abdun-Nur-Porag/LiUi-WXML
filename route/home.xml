@@ -1,0 +1,5 @@
+<app>
+  <use com="/js/base/button.js"/>
+  <use com="/js/base/text.js"/>
+  <Text text="This is me"/>
+</app>

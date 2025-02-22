@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML to JS Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    textarea, input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      white-space: pre-wrap;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+<h1>HTML to JS Converter</h1>
+
+<label for="htmlInput">HTML Tag:</label>
+<input type="text" id="htmlInput" placeholder="Enter HTML tag (e.g., button)">
+
+<label for="componentName">Component Name:</label>
+<input type="text" id="componentName" placeholder="Component Name (e.g., Button)">
+
+<label for="classesInput">Class Names (one per line, format key:value):</label>
+<textarea id="classesInput" placeholder="Example:&#10;one: ripple&#10;another: extra-class"></textarea>
+
+<label for="idName">ID:</label>
+<input type="text" id="idName" placeholder="ID (e.g., myButton)">
+
+<label for="styleName">Style:</label>
+<input type="text" id="styleName" placeholder="Style (e.g., color: red; padding: 10px;)">
+
+<button onclick="convertToJS()">Convert to JS</button>
+
+<h2>Generated JS Code:</h2>
+<pre id="output"></pre>
+
+<script>
+function convertToJS() {
+  // Get the values from the inputs
+  const htmlInput = document.getElementById('htmlInput').value.trim();
+  const componentName = document.getElementById('componentName').value.trim();
+  const classesInput = document.getElementById('classesInput').value.trim();
+  const idName = document.getElementById('idName').value.trim();
+  const styleName = document.getElementById('styleName').value.trim();
+
+  // Start building the JS code
+  let jsCode = `${componentName} = (_given_) => {\n`;
+  jsCode += `  return new create("${htmlInput}")\n`;
+
+  // Process classes input if available
+  if (classesInput) {
+    let classEntries = classesInput.split('\n');
+    let classObject = classEntries.map(entry => {
+      let parts = entry.split(':');
+      // Ensure that we have both key and value
+      if (parts.length === 2) {
+        let key = parts[0].trim();
+        let value = parts[1].trim();
+        return `      ${key}: "${value}"`;
+      }
+      return null;
+    }).filter(item => item !== null);
+
+    if (classObject.length > 0) {
+      jsCode += `    .class({\n${classObject.join(",\n")}\n    })\n`;
+    }
+  }
+
+  // Process ID if provided
+  if (idName) {
+    jsCode += `    .id("${idName}")\n`;
+  }
+
+  // Process style if provided
+  if (styleName) {
+    jsCode += `    .style({\n      ${styleName}\n    })\n`;
+  }
+
+  jsCode += `}`;
+
+  // Display the generated code in the output element
+  document.getElementById('output').textContent = jsCode;
+}
+</script>
+
+</body>
+</html>
