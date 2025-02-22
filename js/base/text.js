@@ -7,5 +7,6 @@ userComponents['Text'] = (props) => {
       padding: "auto",
       backgroundColor: props.backgroundColor,
       color: props.color || "black"
+      
     });
 };

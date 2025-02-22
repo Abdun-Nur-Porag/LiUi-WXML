@@ -1,5 +1,39 @@
-<app>
-  <use com="/js/base/button.js"/>
-  <use com="/js/base/text.js"/>
-  <Text text="This is me"/>
-</app>
+<root>
+  <style>
+    .container {
+      background-color: lightblue;
+      padding: 20px;
+    }
+    
+    .button {
+      background-color: orange;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .menu {
+      background-color: #f4f4f4;
+      border: 1px solid #ccc;
+      width: 200px;
+    }
+    
+    .menu-item:hover {
+      background-color: #ddd;
+    }
+  </style>
+  <div class="container">
+    <!-- Text Component -->
+    <use com="/js/base/base.js" />
+    <text text="Hello, World!" class="text-style" style="font-size: 24px; color: green;" />
+    
+    <!-- Button Component -->
+    <button text="Click Me" class="button" onClick="alert('Button clicked!')" />
+    
+    <!-- Menu Component -->
+   <script>
+     alert("hi")
+   </script>
+  </div>
+</root>

@@ -1,5 +1,5 @@
 
-class create {
+class Create {
   constructor(tag) {
     this.el = document.createElement(tag);
   }
@@ -14,17 +14,16 @@ class create {
     return this;
   }
   
-
   class(classes) {
-  if (typeof classes === 'string') {
-    this.el.classList.add(classes);
-  } else if (Array.isArray(classes)) {
-    classes.forEach(cls => this.el.classList.add(cls));
-  } else if (typeof classes === 'object') {
-    Object.values(classes).forEach(cls => this.el.classList.add(cls));
+    if (typeof classes === 'string') {
+      this.el.classList.add(classes);
+    } else if (Array.isArray(classes)) {
+      classes.forEach(cls => this.el.classList.add(cls));
+    } else if (typeof classes === 'object') {
+      Object.values(classes).forEach(cls => this.el.classList.add(cls));
+    }
+    return this;
   }
-  return this;
-}
   
   id(idName) {
     this.el.id = idName;
@@ -33,14 +32,22 @@ class create {
   
   attrs(attributes) {
     if (attributes && typeof attributes === 'object') {
-      Object.entries(attributes).forEach(([attr, value]) => this.el.setAttribute(attr, value));
+      Object.entries(attributes).forEach(([attr, value]) => {
+        this.el.setAttribute(attr, value);
+      });
     }
     return this;
   }
   
   style(styles) {
     if (styles && typeof styles === 'object') {
-      Object.entries(styles).forEach(([key, value]) => (this.el.style[key] = value));
+      Object.entries(styles).forEach(([key, value]) => {
+        if (key.startsWith('--')) {
+          this.el.style.setProperty(key, value);
+        } else {
+          this.el.style[key] = value;
+        }
+      });
     }
     return this;
   }
@@ -66,7 +73,7 @@ class create {
   }
   
   append(child) {
-    if (child instanceof create) {
+    if (child instanceof Create) {
       this.el.appendChild(child.el);
     } else if (child instanceof HTMLElement) {
       this.el.appendChild(child);
@@ -136,6 +143,29 @@ const parseXML = (xmlString) => {
 const parseElement = async (node) => {
   if (!node || node.nodeType !== 1) return null;
   
+  // Handle <style> tags for CSS
+  if (node.tagName === 'style') {
+    const styleContent = node.textContent;
+    const styleElement = document.createElement('style');
+    styleElement.textContent = styleContent;
+    document.head.appendChild(styleElement);
+    return null; // Skip rendering <style> itself
+  }
+  
+  // Handle <script> tags
+  if (node.tagName === 'script') {
+    const scriptElement = document.createElement('script');
+    if (node.hasAttribute('src')) {
+      // External script
+      scriptElement.src = node.getAttribute('src');
+    } else {
+      // Inline script
+      scriptElement.textContent = node.textContent;
+    }
+    document.head.appendChild(scriptElement);
+    return null; // Skip rendering <script> itself
+  }
+  
   // Handle <use> tags for user-defined components
   if (node.tagName === 'use' && node.hasAttribute('com')) {
     await loadUserComponents(node);
@@ -159,13 +189,25 @@ const parseElement = async (node) => {
     element = userComponents[tagName](props);
   } else {
     // Default HTML element
-    element = new create(tagName).attrs(props);
+    element = new Create(tagName).attrs(props);
   }
   
   // Process the class attribute separately
   if (props.class) {
     const classes = props.class.split(',').map(cls => cls.trim());
     element.class(classes);
+  }
+  
+  // Process the style attribute separately
+  if (props.style) {
+    const styles = props.style.split(';').reduce((acc, style) => {
+      const [key, value] = style.split(':').map(s => s.trim());
+      if (key && value) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    element.style(styles);
   }
   
   // Process child nodes (Nested Elements)
@@ -225,5 +267,9 @@ const renderXML = async (xmlUrl, targetSelector) => {
     }
   } catch (error) {
     console.error("Error rendering XML:", error);
+    console.error("Stack trace:", error.stack); // Log stack trace for debugging
   }
 };
+
+// Example usage:
+// renderXML("example.xml", ".app");
